@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧩 Cloner le code
+      - name: 📥 Cloner le code
         uses: actions/checkout@v4
 
       - name: 🐍 Installer Python
@@ -30,12 +30,12 @@ jobs:
       - name: 📄 Convertir le rapport XML en HTML
         uses: pl-strflt/junit-xml-to-html@v1
         with:
-          mode: 'no-frames'       # ou 'frames' si tu préfères une navigation par menu
+          mode: 'no-frames'                  # ou 'frames' si tu préfères une version avec navigation
           input: 'reports/xml'
-          output: 'reports/html'  # 👉 C'est bien un dossier
+          output: 'reports/html/report.html' # fichier de sortie HTML unique
 
       - name: 📁 Sauvegarder le rapport HTML
         uses: actions/upload-artifact@v4
         with:
           name: rapport-behave-html
-          path: reports/html/*.html
+          path: reports/html/report.html
