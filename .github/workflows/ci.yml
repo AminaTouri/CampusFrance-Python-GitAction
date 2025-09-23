@@ -27,6 +27,9 @@ jobs:
     - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
       run: behave --junit --junit-directory reports/xml
 
+    - name: 🔍 Vérifier les fichiers XML générés
+      run: ls -R reports/xml || echo "⚠️ Aucun fichier XML trouvé"
+
     - name: 📄 Convertir le rapport XML en HTML
       run: |
         mkdir -p reports/html
@@ -34,7 +37,7 @@ jobs:
           -i reports/xml \
           -o reports/html \
           --mode no-frames
-        ls -R reports/html
+        ls -R reports/html || echo "⚠️ Aucun HTML généré"
 
     - name: 📁 Sauvegarder le rapport HTML
       uses: actions/upload-artifact@v4
