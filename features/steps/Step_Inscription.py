@@ -34,6 +34,7 @@ def step_renseigner_infos(context, AdresseEmail, MotDePasse, Civilite, Nom, Pren
     }
 
     print(f"🧪 Nouveau JDD : {AdresseEmail}")
+    context.user_data = user_data  # ✅ ligne à ajouter                       
     context.page.remplir_formulaire(user_data)
 
 
