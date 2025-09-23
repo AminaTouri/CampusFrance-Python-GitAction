@@ -27,13 +27,13 @@ jobs:
     - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
       run: behave --junit --junit-directory reports/xml
 
-    - name: 📄 Installer junit-xml-to-html
-      run: npm install -g junit-xml-to-html
-
     - name: 📄 Convertir le rapport XML en HTML
       run: |
         mkdir -p reports/html
-        junit-xml-to-html -i reports/xml -o reports/html --mode no-frames
+        npx --yes junit-xml-to-html@1.0.4 \
+          -i reports/xml \
+          -o reports/html \
+          --mode no-frames
         ls -R reports/html
 
     - name: 📁 Sauvegarder le rapport HTML
