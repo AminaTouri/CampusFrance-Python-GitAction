@@ -11,31 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Cloner le code
-        uses: actions/checkout@v4
+    - name: 📥 Cloner le code
+      uses: actions/checkout@v4
 
-      - name: 🐍 Installer Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+    - name: 🐍 Installer Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
-      - name: 📦 Installer les dépendances
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: 📦 Installer les dépendances
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
-        run: behave --junit --junit-directory reports/xml
+    - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
+      run: behave --junit --junit-directory reports/xml
 
-      - name: 📄 Convertir le rapport XML en HTML
-        uses: pl-strflt/junit-xml-to-html@v1
-        with:
-          mode: 'no-frames'                  # ou 'frames' si tu préfères une version avec navigation
-          input: 'reports/xml'
-          output: 'reports/html/report.html' # fichier de sortie HTML unique
+    - name: 📄 Convertir le rapport XML en HTML
+      uses: pl-strflt/junit-xml-to-html@v1
+      with:
+        mode: 'no-frames'                    # ou 'frames' si tu veux un menu à gauche
+        input: 'reports/xml'                 # dossier contenant les fichiers XML
+        output: 'reports/html/report.html'   # fichier HTML de sortie
 
-      - name: 📁 Sauvegarder le rapport HTML
-        uses: actions/upload-artifact@v4
-        with:
-          name: rapport-behave-html
-          path: reports/html/report.html
+    - name: 📁 Sauvegarder le rapport HTML
+      uses: actions/upload-artifact@v4
+      with:
+        name: rapport-behave-html
+        path: reports/html/report.html
