@@ -11,35 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: 📥 Cloner le code
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: 🐍 Installer Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Installer les dépendances
+      - name: 📦 Installer les dépendances
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lancer les tests Behave avec rapport JUnit
+      - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
         run: behave --junit --junit-directory reports/xml
 
-      - name: Convertir le rapport XML en HTML
+      - name: 🧾 Convertir le rapport XML en HTML
         uses: pl-strflt/junit-xml-to-html@v1
         with:
-          mode: 'no-frames'
+          mode: 'no-frames'         # ou 'frames' si tu préfères une version avec menu
           input: 'reports/xml'
           output: 'reports/html'
 
-      - name: Sauvegarder le rapport HTML
+      - name: 📤 Sauvegarder le rapport HTML
         uses: actions/upload-artifact@v3
         with:
-          name: behave-html-report
+          name: rapport-behave-html
           path: reports/html/*.html
-
-      - name: Lancer les tests Behave (console)
-        # Optionnel : garder le output normal aussi
-        run: behave
