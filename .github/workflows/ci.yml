@@ -1,5 +1,6 @@
 name: Python Selenium CI avec rapport HTML
 
+# Déclencheurs du workflow : sur chaque push ou pull request vers "main"
 on:
   push:
     branches: [ main ]
@@ -8,34 +9,49 @@ on:
 
 jobs:
   run-tests:
+    # Lancer le job sur une VM Ubuntu 
     runs-on: ubuntu-latest
 
     steps:
+    # Étape 1 : Cloner le code source du repo
     - name: 📥 Cloner le code
       uses: actions/checkout@v4
 
+    # Étape 2 : Installer la version de Python souhaitée (ici 3.12)
     - name: 🐍 Installer Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
 
+    # Étape 3 : Installer les dépendances Python + junit2html
     - name: 📦 Installer les dépendances
       run: |
+        # Mettre à jour pip
         python -m pip install --upgrade pip
+        # Installer les dépendances de ton projet définies dans requirements.txt
         pip install -r requirements.txt
+        # Installer l’outil Python junit2html pour convertir XML → HTML
         pip install junit2html
 
+    # Étape 4 : Exécuter les tests Behave avec génération de rapports au format JUnit XML
     - name: 🧪 Exécuter les tests Behave (avec JUnit XML)
       run: behave --junit --junit-directory reports/xml
 
+    # Étape 5 : Convertir le fichier XML généré en rapport HTML lisible
     - name: 🔄 Convertir XML en HTML avec junit2html
       run: |
+        # Créer le dossier de sortie (au cas où il n’existe pas)
         mkdir -p reports/html
+        # Conversion : XML → HTML
         junit2html reports/xml/TESTS-Creation-De-Compte.xml reports/html/report.html
+        # Vérifier que le fichier a bien été généré
         ls -R reports/html
 
+    # Étape 6 : Sauvegarder le rapport HTML comme artefact téléchargeable
     - name: 📁 Sauvegarder le rapport HTML
       uses: actions/upload-artifact@v4
       with:
+        # Nom que tu verras dans GitHub Actions (Artifacts)
         name: rapport-behave-html
+        # Chemin vers le dossier contenant le rapport HTML
         path: reports/html
