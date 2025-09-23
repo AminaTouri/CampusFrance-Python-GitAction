@@ -14,7 +14,6 @@ class RegistrationPage:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        # options.add_argument("--user-data-dir=/tmp/chrome-data")  # si l'erreur revient
         self.driver = webdriver.Chrome(options=options)
         self.driver.maximize_window()
         self.wait = WebDriverWait(self.driver, 10)
@@ -63,7 +62,6 @@ class RegistrationPage:
                 raise ValueError(f"Statut non supporté: {statut}")
             radio = self.driver.find_element(By.ID, statut_id)
             self.driver.execute_script("arguments[0].click();", radio)
-
             assert radio.is_selected(), f" Le statut '{statut}' n'a pas été sélectionné"
 
             self._remplir_selectize_custom("edit-field-domaine-etudes", user["DomaineEtudes"])
@@ -72,8 +70,7 @@ class RegistrationPage:
             print(f"✅ Formulaire terminé pour : {user['AdresseEmail']}")
         except Exception as e:
             print(f"❌ Erreur lors du remplissage du formulaire : {e}")
-            input("Appuyez sur Entrée pour garder la fenêtre ouverte...")
-            raise
+            raise  # Suppression de input() pour éviter EOFError en CI
 
     def _remplir_selectize_custom(self, base_id, valeur):
         try:
@@ -82,18 +79,13 @@ class RegistrationPage:
             input_field = container.find_element(By.XPATH, ".//following::input[@type='text'][1]")
 
             self.driver.execute_script("arguments[0].click();", input_field)
-            ActionChains(self.driver)\
-                .move_to_element(input_field)\
-                .click()\
-                .send_keys(Keys.CONTROL + "a")\
-                .send_keys(Keys.BACKSPACE)\
-                .perform()
+            input_field.clear()
+            time.sleep(0.5)
             input_field.send_keys(valeur)
-            time.sleep(0.3)
+            time.sleep(0.5)
             input_field.send_keys(Keys.ENTER)
 
-            print(f" Champ '{base_id}' rempli avec : {valeur}")
+            print(f"✅ Champ '{base_id}' rempli avec : {valeur}")
         except Exception as e:
             print(f"❌ Erreur champ selectize '{base_id}' : {e}")
             raise
-
