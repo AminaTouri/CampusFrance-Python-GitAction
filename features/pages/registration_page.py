@@ -4,11 +4,18 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.options import Options
 import time
 
 class RegistrationPage:
     def __init__(self):
-        self.driver = webdriver.Chrome()
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        # options.add_argument("--user-data-dir=/tmp/chrome-data")  # si l'erreur revient
+        self.driver = webdriver.Chrome(options=options)
         self.driver.maximize_window()
         self.wait = WebDriverWait(self.driver, 10)
 
@@ -89,3 +96,4 @@ class RegistrationPage:
         except Exception as e:
             print(f"❌ Erreur champ selectize '{base_id}' : {e}")
             raise
+
