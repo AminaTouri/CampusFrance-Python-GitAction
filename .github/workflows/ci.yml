@@ -1,4 +1,4 @@
-name: Python Selenium CI
+name: Python Selenium CI avec rapport HTML
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Télécharger le code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Installer Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -24,5 +24,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lancer les tests Behave
-        run: python -m behave
+      - name: Lancer les tests Behave avec rapport JUnit
+        run: behave --junit --junit-directory reports/xml
+
+      - name: Convertir le rapport XML en HTML
+        uses: pl-strflt/junit-xml-to-html@v1
+        with:
+          mode: 'no-frames'
+          input: 'reports/xml'
+          output: 'reports/html'
+
+      - name: Sauvegarder le rapport HTML
+        uses: actions/upload-artifact@v3
+        with:
+          name: behave-html-report
+          path: reports/html/*.html
+
+      - name: Lancer les tests Behave (console)
+        # Optionnel : garder le output normal aussi
+        run: behave
