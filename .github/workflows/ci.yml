@@ -10,7 +10,8 @@ on:
 jobs:
   run-tests:
     # Lancer le job sur une VM Ubuntu 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     # Étape 1 : Cloner le code source du repo
